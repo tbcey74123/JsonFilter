@@ -5,12 +5,15 @@
 #include <QFile>
 #include <QWidget>
 
+#include "window.h"
+
 using namespace std;
 
 int main(int argc, char *argv[]) {
 
     QApplication app(argc, argv);
 
+/*
     QFile file("/json.txt");
     if(!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "File cannot be opened";
@@ -21,6 +24,11 @@ int main(int argc, char *argv[]) {
         }
     }
     file.close();
+*/
 
-    return 0;
+    Window window;
+    window.show();
+
+    app.exec();
+
 }
