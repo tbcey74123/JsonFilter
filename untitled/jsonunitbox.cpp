@@ -13,36 +13,33 @@
 JsonUnitBox::JsonUnitBox(QWidget *parent) : JsonUnitBox("", parent) {}
 
 JsonUnitBox::JsonUnitBox(const QString &text, QWidget *parent) : QPushButton(text, parent) {
-    qDebug() << "test2";
+    subBox = NULL;
     setFixedSize(defaultWidth, defaultHeight);
     if(parent) {
 
         layout = dynamic_cast <QVBoxLayout *>(parent->layout());
     }
     QObject::connect(this, &JsonUnitBox::pressed, [=]() {
-        qDebug() << "test";
+
         if(!layout)
             return;
-        JsonUnitBox *newBox = new JsonUnitBox("box");
+        if(!subBox) {
+            qDebug() << "testtt";
+            subBox = new ContentBox(parent);
+            layout->insertWidget(layout->indexOf(this) + 1, subBox);
+            subBox->setVisible(true);
+            dynamic_cast <ContentBox *>(parent)->resizeBySizeHint();
+            //parent->setMinimumSize(parent->sizeHint());
+        }else {
+            subBox->setVisible(!subBox->isVisible());
+            dynamic_cast <ContentBox *>(parent)->resizeBySizeHint();
+        //JsonUnitBox *newBox = new JsonUnitBox("box");
+        }
         qDebug() << "test2";
-        layout->insertWidget(layout->indexOf(this) + 1, newBox);
-        newBox->setVisible(true);
-        parent->setMinimumSize(parent->sizeHint());
+        qDebug() << parent->sizeHint();
     });
 }
 
 void JsonUnitBox::setLayout(QVBoxLayout *layout) {
     this->layout = layout;
 }
-
-
-void JsonUnitBox::setSubBox(SubBox *box) {
-    subBox = box;
-}
-
-void JsonUnitBox::buttonPressed() {
-
-    //dynamic_cast <ContentBox *>(parent())->insertButton(0);
-    subBox->setVisible(!subBox->isVisible());
-}
-

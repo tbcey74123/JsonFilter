@@ -17,82 +17,67 @@
 Window::Window(QWidget *parent) : QWidget(parent) {
 
    setFixedSize(maxWidth, maxHeight);
-   QScrollArea *scroll = new QScrollArea(this);
-   QVBoxLayout *vBox = new QVBoxLayout(scroll);
-   ContentBox *contentBox = new ContentBox(scroll, this);
-   QPushButton *button = new QPushButton("press", this);
+   content = new ContentBox(this);
+   content->setBasedBox(true);
 
-   scroll->move(0, 100);
+   scroll = new QScrollArea(this);
+
+   scroll->setFixedSize(800, height());
    scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-   scroll->setWidget(contentBox);
-   scroll->resize(maxWidth, maxHeight - 100);
+   scroll->setWidget(content);
 
-   QObject::connect(button, SIGNAL(clicked(bool)), contentBox, SLOT(addButton()));
 }
 
+ContentBox *Window::getContentBox() { return content; }
+QScrollArea *Window::getScroll() { return scroll; }
 
-ContentBox::ContentBox(){
+
+
+ContentBox::ContentBox(QWidget *parent) : QWidget(parent){
     index = 0;
 
-    vBox = new QVBoxLayout;
+    setFixedWidth(parent->width() - parent->style()->pixelMetric(QStyle::PM_ScrollBarExtent) - 2);
 
-    setLayout(vBox);
+    //setFixedHeight(600);
+
+    QPalette pal;
+    pal.setColor(QPalette::Background, Qt::black);
+
+    setAutoFillBackground(true);
+    setPalette(pal);
+
+    layout = new QVBoxLayout;
+
+    //set the layout to the center.
+    layout->setContentsMargins((width() - JsonUnitBox::DEFAULT_WIDTH) / 2, 10, (width() - JsonUnitBox::DEFAULT_WIDTH) / 2, 10);
+    setLayout(layout);
+
+    qDebug() << parent->size();
+    qDebug() << parent->sizeHint();
+    addButton();
 }
 
-ContentBox::ContentBox(QScrollArea *scroll, QWidget *parent) : QWidget(parent) {
+bool ContentBox::isBasedBox() { return isBased; }
+void ContentBox::setBasedBox(bool flag) { isBased = flag; }
 
-    index = 0;
-    this->scroll = scroll;
+void ContentBox::resizeBySizeHint() {
 
-    //substract the width of the bar
-    setMinimumSize(parent->width() - parent->style()->pixelMetric(QStyle::PM_ScrollBarExtent), parent->height());
 
-    vBox = new QVBoxLayout;
+    setMinimumSize(sizeHint());
 
-    buttonList = new QLinkedList<JsonUnitBox *>;
-
-    for(int i = 0; i < index; i++) {
-        JsonUnitBox *newBox = new JsonUnitBox("button" + QString::number(i), this);
-
-        buttonList->append(newBox);
-        vBox->addWidget(newBox);
-
-        QObject::connect(newBox, SIGNAL(clicked(bool)), newBox, SLOT(buttonPressed()));
+    if(parent() && !isBased) {
+        ContentBox *p = dynamic_cast <ContentBox *>(parent());
+        p->resizeBySizeHint();
     }
-
-    setLayout(vBox);
-
-}
-
-void ContentBox::insertButton(int insertIndex) {
-    JsonUnitBox *newBox = new JsonUnitBox("button" + QString::number(index++), this);
-
-    vBox->insertWidget(insertIndex, newBox);
-
-    resize(width(), height() + 50);
-
-    //QObject::connect(newBox, SIGNAL(pressed()), newBox, SLOT(buttonPressed()));
 }
 
 void ContentBox::addButton() {
 
     JsonUnitBox *newBox = new JsonUnitBox("button" + QString::number(index++), this);
-    SubBox *subBox;
-
-    qDebug() << "test";
-
-    subBox = new SubBox(this);
-    newBox->setSubBox(subBox);
-
-    vBox->addWidget(newBox);
-    vBox->addWidget(subBox);
-
-    QObject::connect(newBox, SIGNAL(clicked(bool)), subBox, SLOT(display()));
-
-    resize(width(), height() + 50);
+    layout->addWidget(newBox);
 }
 
-
+/*
 SubBox::SubBox(ContentBox *parent){
 
     setParent(parent);
@@ -128,4 +113,4 @@ void SubBox::display() {
     }
 
 }
-
+*/

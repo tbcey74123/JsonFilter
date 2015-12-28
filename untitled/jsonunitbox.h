@@ -7,16 +7,14 @@
 
 class QPushButton;
 class QVBoxLayout;
-class SubBox;
 
+class ContentBox;
 class JsonUnitBox : public QPushButton {
 
     Q_OBJECT
 
-
-
     QVBoxLayout *layout;
-    SubBox *subBox;
+    ContentBox *subBox;
 
     public:
         const int static DEFAULT_WIDTH = 700, DEFAULT_HEIGHT = 50;
@@ -25,11 +23,8 @@ class JsonUnitBox : public QPushButton {
         JsonUnitBox(const QString &text, QWidget *parent = 0);
 
         void setLayout(QVBoxLayout *layout);
-        void setSubBox(SubBox *box);
 
     private slots:
-        void buttonPressed();
-
 };
 
 #endif // JSONUNITBOX_H

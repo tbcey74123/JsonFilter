@@ -8,12 +8,19 @@
 #include <QVBoxLayout>
 #include <QScrollArea>
 
+class ContentBox;
+
 class Window : public QWidget {
 
-    QLinkedList<JsonUnitBox *> *buttonList;
+    ContentBox *content;
+    QScrollArea *scroll;
 
     public:
         Window(QWidget *parent = 0);
+
+        void addContentBox(ContentBox *content);
+        ContentBox *getContentBox();
+        QScrollArea *getScroll();
 
 };
 
@@ -21,14 +28,18 @@ class ContentBox : public QWidget {
 
     Q_OBJECT
 
-    QLinkedList<JsonUnitBox *> *buttonList;
-    QVBoxLayout *vBox;
+    QVBoxLayout *layout;
     QScrollArea *scroll;
+    bool isBased;
 
     public:
-        ContentBox();
+        ContentBox(QWidget *parent = 0);
         ContentBox(QScrollArea *scroll, QWidget *parent = 0);
 
+        bool isBasedBox();
+        void setBasedBox(bool flag);
+
+        void resizeBySizeHint();
         void insertButton(int index);
 
     public slots:
@@ -37,7 +48,7 @@ class ContentBox : public QWidget {
     private:
         int index;
 };
-
+/*
 class SubBox : public ContentBox {
 
     Q_OBJECT
@@ -53,7 +64,7 @@ class SubBox : public ContentBox {
         void display();
 
 };
-
+*/
 
 
 #endif // WINDOW_H
