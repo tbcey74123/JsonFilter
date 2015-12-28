@@ -52,22 +52,26 @@ ContentBox::ContentBox(QWidget *parent) : QWidget(parent){
     layout->setContentsMargins((width() - JsonUnitBox::DEFAULT_WIDTH) / 2, 10, (width() - JsonUnitBox::DEFAULT_WIDTH) / 2, 10);
     setLayout(layout);
 
-    qDebug() << parent->size();
-    qDebug() << parent->sizeHint();
     addButton();
+    defaultSize = sizeHint();
 }
 
 bool ContentBox::isBasedBox() { return isBased; }
 void ContentBox::setBasedBox(bool flag) { isBased = flag; }
 
-void ContentBox::resizeBySizeHint() {
+void ContentBox::resizeBySizeHint(bool isDefault) {
 
+    if(isDefault) {
+        setFixedSize(defaultSize);
+        setMinimumSize(defaultSize);
+    }
+    else
+        setMinimumSize(sizeHint());
 
-    setMinimumSize(sizeHint());
 
     if(parent() && !isBased) {
         ContentBox *p = dynamic_cast <ContentBox *>(parent());
-        p->resizeBySizeHint();
+        p->resizeBySizeHint(isDefault);
     }
 }
 

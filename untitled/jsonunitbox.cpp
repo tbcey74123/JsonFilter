@@ -24,19 +24,28 @@ JsonUnitBox::JsonUnitBox(const QString &text, QWidget *parent) : QPushButton(tex
         if(!layout)
             return;
         if(!subBox) {
-            qDebug() << "testtt";
             subBox = new ContentBox(parent);
             layout->insertWidget(layout->indexOf(this) + 1, subBox);
             subBox->setVisible(true);
-            dynamic_cast <ContentBox *>(parent)->resizeBySizeHint();
+            dynamic_cast <ContentBox *>(parent)->resizeBySizeHint(false);
             //parent->setMinimumSize(parent->sizeHint());
         }else {
-            subBox->setVisible(!subBox->isVisible());
-            dynamic_cast <ContentBox *>(parent)->resizeBySizeHint();
+            if(subBox->isVisible()) {
+                //subBox->setVisible(false);
+                //dynamic_cast <ContentBox *>(parent)->resizeBySizeHint(true);
+                layout->removeWidget(subBox);
+                subBox->setVisible(false);
+                layout->setSizeConstraint(QLayout::SetFixedSize);
+
+            }else {
+                layout->addWidget(subBox);
+                subBox->setVisible(true);
+
+                //dynamic_cast <ContentBox *>(parent)->resizeBySizeHint(false);
+            }
+
         //JsonUnitBox *newBox = new JsonUnitBox("box");
         }
-        qDebug() << "test2";
-        qDebug() << parent->sizeHint();
     });
 }
 

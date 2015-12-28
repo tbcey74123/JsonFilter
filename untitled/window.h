@@ -9,7 +9,7 @@
 #include <QScrollArea>
 
 class ContentBox;
-
+class QSize;
 class Window : public QWidget {
 
     ContentBox *content;
@@ -31,6 +31,7 @@ class ContentBox : public QWidget {
     QVBoxLayout *layout;
     QScrollArea *scroll;
     bool isBased;
+    QSize defaultSize;
 
     public:
         ContentBox(QWidget *parent = 0);
@@ -39,7 +40,7 @@ class ContentBox : public QWidget {
         bool isBasedBox();
         void setBasedBox(bool flag);
 
-        void resizeBySizeHint();
+        void resizeBySizeHint(bool isDefault);
         void insertButton(int index);
 
     public slots:
@@ -47,6 +48,7 @@ class ContentBox : public QWidget {
 
     private:
         int index;
+
 };
 /*
 class SubBox : public ContentBox {
