@@ -17,7 +17,7 @@ class JsonUnitBox : public QPushButton {
     ContentBox *subBox;
 
     public:
-        const int static DEFAULT_WIDTH = 700, DEFAULT_HEIGHT = 50;
+        const int static DEFAULT_WIDTH = 500, DEFAULT_HEIGHT = 50;
 
         JsonUnitBox(QWidget *parent = 0);
         JsonUnitBox(const QString &text, QWidget *parent = 0);

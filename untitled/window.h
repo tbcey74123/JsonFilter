@@ -10,6 +10,7 @@
 
 class ContentBox;
 class QSize;
+
 class Window : public QWidget {
 
     ContentBox *content;
@@ -42,12 +43,16 @@ class ContentBox : public QWidget {
 
         void resizeBySizeHint(bool isDefault);
         void insertButton(int index);
+        void handleJson(const QJsonDocument &document);
 
     public slots:
         void addButton();
+        void addButton(const QString &text);
 
     private:
         int index;
+
+
 
 };
 /*

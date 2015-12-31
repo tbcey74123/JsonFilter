@@ -10,6 +10,9 @@
 #include <QScrollBar>
 #include <QTextBrowser>
 #include <QStyle>
+#include <QJsonDocument>
+#include <QJSonObject>
+#include <QJsonArray>
 
 #define maxWidth 800
 #define maxHeight 600
@@ -23,7 +26,7 @@ Window::Window(QWidget *parent) : QWidget(parent) {
    scroll = new QScrollArea(this);
 
    scroll->setFixedSize(800, height());
-   scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+   //scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
    scroll->setWidget(content);
 
 }
@@ -36,15 +39,16 @@ QScrollArea *Window::getScroll() { return scroll; }
 ContentBox::ContentBox(QWidget *parent) : QWidget(parent){
     index = 0;
 
-    setFixedWidth(parent->width() - parent->style()->pixelMetric(QStyle::PM_ScrollBarExtent) - 2);
+    //setFixedWidth(parent->width() - parent->style()->pixelMetric(QStyle::PM_ScrollBarExtent) - 2);
+    setFixedWidth(600);
 
-    //setFixedHeight(600);
 
     QPalette pal;
     pal.setColor(QPalette::Background, Qt::black);
 
     setAutoFillBackground(true);
     setPalette(pal);
+
 
     layout = new QVBoxLayout;
 
@@ -75,46 +79,25 @@ void ContentBox::resizeBySizeHint(bool isDefault) {
     }
 }
 
-void ContentBox::addButton() {
+void ContentBox::handleJson(const QJsonDocument &document) {
 
-    JsonUnitBox *newBox = new JsonUnitBox("button" + QString::number(index++), this);
+    if(document.isEmpty()) return;
+    if(document.isObject()) {
+       QJsonObject obj = document.object();
+       for(QJsonObject::Iterator i = obj.begin(); i != obj.end(); ++i) {
+           addButton(i.key());
+       }
+    }else if(document.isArray()) {
+
+    }
+}
+
+//public slots
+void ContentBox::addButton() {
+    addButton(" ");
+}
+void ContentBox::addButton(const QString &text) {
+    JsonUnitBox *newBox = new JsonUnitBox(text, this);
     layout->addWidget(newBox);
 }
 
-/*
-SubBox::SubBox(ContentBox *parent){
-
-    setParent(parent);
-
-    setMinimumSize(150, 200);
-    setVisible(false);
-
-    QPalette pal(palette());
-    pal.setColor(QPalette::Background, Qt::black);
-
-    setAutoFillBackground(true);
-    setPalette(pal);
-
-
-}
-
-bool SubBox::isButtonAdd() { return buttonAdd; }
-
-void SubBox::display() {
-
-    ContentBox *parentBox = dynamic_cast <ContentBox *>(parent());
-
-    if(isVisible()) {
-        setVisible(false);
-        parentBox->resize(parentBox->width(), parentBox->height() - 200);
-    }else {
-        if(!buttonAdd) {
-            addButton();
-            buttonAdd = true;
-        }
-        setVisible(true);
-        parentBox->resize(parentBox->width(), parentBox->height() + 200);
-    }
-
-}
-*/

@@ -26,6 +26,7 @@ JsonUnitBox::JsonUnitBox(const QString &text, QWidget *parent) : QPushButton(tex
         if(!subBox) {
             subBox = new ContentBox(parent);
             layout->insertWidget(layout->indexOf(this) + 1, subBox);
+            layout->setSizeConstraint(QLayout::SetFixedSize);
             subBox->setVisible(true);
             dynamic_cast <ContentBox *>(parent)->resizeBySizeHint(false);
             //parent->setMinimumSize(parent->sizeHint());
@@ -35,7 +36,7 @@ JsonUnitBox::JsonUnitBox(const QString &text, QWidget *parent) : QPushButton(tex
                 //dynamic_cast <ContentBox *>(parent)->resizeBySizeHint(true);
                 layout->removeWidget(subBox);
                 subBox->setVisible(false);
-                layout->setSizeConstraint(QLayout::SetFixedSize);
+
 
             }else {
                 layout->addWidget(subBox);
