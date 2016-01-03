@@ -8,6 +8,7 @@
 #include <QVBoxLayout>
 #include <QScrollArea>
 
+class QGroupBox;
 class ContentBox;
 class QSize;
 
@@ -15,13 +16,23 @@ class Window : public QWidget {
 
     ContentBox *content;
     QScrollArea *scroll;
+    QGroupBox *controlPanel;
+    QVBoxLayout *layout;
 
     public:
         Window(QWidget *parent = 0);
 
+        void init();
+        void init(const QJsonValue &json);
         void addContentBox(ContentBox *content);
+
         ContentBox *getContentBox();
         QScrollArea *getScroll();
+
+        static QJsonValue readJsonFile(QString filePath);
+
+    private:
+        void createControlPanel(Window *window);
 
 };
 
@@ -35,44 +46,31 @@ class ContentBox : public QWidget {
     QSize defaultSize;
 
     public:
-        ContentBox(QWidget *parent = 0);
+        ContentBox(const QJsonValue &json, QWidget *parent = 0);
         ContentBox(QScrollArea *scroll, QWidget *parent = 0);
 
         bool isBasedBox();
         void setBasedBox(bool flag);
 
+        int getBoxNumber();
+
         void resizeBySizeHint(bool isDefault);
         void insertButton(int index);
-        void handleJson(const QJsonDocument &document);
+        void handleJson(const QJsonValue &json);
+
+        void init();
 
     public slots:
-        void addButton();
-        void addButton(const QString &text);
+        JsonUnitBox *addButton();
+        JsonUnitBox *addButton(const QString &text);
 
     private:
         int index;
+        int boxNumber;
 
 
 
 };
-/*
-class SubBox : public ContentBox {
-
-    Q_OBJECT
-
-    bool buttonAdd;
-
-    public:
-        SubBox(ContentBox *parent = 0);
-
-        bool isButtonAdd();
-
-    private slots:
-        void display();
-
-};
-*/
-
 
 #endif // WINDOW_H
 

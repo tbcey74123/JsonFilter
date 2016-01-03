@@ -2,7 +2,6 @@
 #define JSONUNITBOX_H
 
 #include <QWidget>
-
 #include <QPushButton>
 
 class QPushButton;
@@ -17,12 +16,13 @@ class JsonUnitBox : public QPushButton {
     ContentBox *subBox;
 
     public:
-        const int static DEFAULT_WIDTH = 500, DEFAULT_HEIGHT = 50;
+        const int static DEFAULT_WIDTH = 650, DEFAULT_HEIGHT = 50;
 
         JsonUnitBox(QWidget *parent = 0);
         JsonUnitBox(const QString &text, QWidget *parent = 0);
 
         void setLayout(QVBoxLayout *layout);
+        void addSubBox(const QJsonValue &json);
 
     private slots:
 };

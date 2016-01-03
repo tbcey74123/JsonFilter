@@ -14,6 +14,7 @@ SOURCES += \
 DISTFILES += \
     json.txt
 
+
 HEADERS += \
     window.h \
     jsonunitbox.h
