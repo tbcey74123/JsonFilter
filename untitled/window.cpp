@@ -132,6 +132,11 @@ ContentBox::ContentBox(const QJsonValue &json, QWidget *parent) : QWidget(parent
 bool ContentBox::isBasedBox() { return isBased; }
 void ContentBox::setBasedBox(bool flag) { isBased = flag; }
 
+JsonUnitBox *ContentBox::getParentBox() { return parentBox; }
+void ContentBox::setParentBox(JsonUnitBox *parentBox) {
+    this->parentBox = parentBox;
+}
+
 int ContentBox::getBoxNumber() { return boxNumber; }
 
 void ContentBox::resizeBySizeHint(bool isDefault) {

@@ -24,6 +24,10 @@ class JsonUnitBox : public QPushButton {
         void setLayout(QVBoxLayout *layout);
         void addSubBox(const QJsonValue &json);
 
+    public slots:
+
+        void printPath();
+
     private slots:
 };
 

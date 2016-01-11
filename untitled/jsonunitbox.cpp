@@ -41,7 +41,7 @@ JsonUnitBox::JsonUnitBox(const QString &text, QWidget *parent) : QPushButton(tex
         layout = dynamic_cast <QVBoxLayout *>(parent->layout());
     }
     QObject::connect(this, &JsonUnitBox::pressed, [=]() {
-        qDebug() << this->text();
+        printPath();
         if(subBox) {
             if(subBox->isVisible()) {
                 //subBox->setVisible(false);
@@ -68,6 +68,7 @@ void JsonUnitBox::addSubBox(const QJsonValue &json) {
     if(!layout)
         return;
     subBox = new ContentBox(json, parentWidget());
+    subBox->setParentBox(this);
     //layout->insertWidget(layout->indexOf(this) + 1, subBox);
     layout->setSizeConstraint(QLayout::SetFixedSize);
     subBox->setVisible(false);
@@ -75,6 +76,17 @@ void JsonUnitBox::addSubBox(const QJsonValue &json) {
     //dynamic_cast <ContentBox *>(parentWidget())->resizeBySizeHint(false);
 }
 
+
+//Public Slots
+void JsonUnitBox::printPath() {
+
+    ContentBox *parentBox = dynamic_cast <ContentBox *>(parent());
+
+    if(!parentBox->isBasedBox()) {
+        parentBox->getParentBox()->printPath();
+    }
+    qDebug() << text();
+}
 
 void JsonUnitBox::setLayout(QVBoxLayout *layout) {
     this->layout = layout;

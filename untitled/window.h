@@ -44,6 +44,7 @@ class ContentBox : public QWidget {
     QScrollArea *scroll;
     bool isBased;
     QSize defaultSize;
+    JsonUnitBox *parentBox;
 
     public:
         ContentBox(const QJsonValue &json, QWidget *parent = 0);
@@ -51,6 +52,8 @@ class ContentBox : public QWidget {
 
         bool isBasedBox();
         void setBasedBox(bool flag);
+        JsonUnitBox *getParentBox();
+        void setParentBox(JsonUnitBox *parentBox);
 
         int getBoxNumber();
 
