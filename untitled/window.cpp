@@ -16,11 +16,16 @@
 #include <QGroupBox>
 #include <QFile>
 #include <QLineEdit>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 #define maxWidth 800
 #define maxHeight 600
 
 Window::Window(QWidget *parent) : QWidget(parent) {
+
+   manager = new QNetworkAccessManager(this);
+   QObject::connect(manager, &QNetworkAccessManager::finished, this, &Window::requestFinished);
 
    content = NULL;
    setFixedSize(maxWidth, maxHeight);
@@ -62,29 +67,17 @@ void Window::init(const QJsonValue &json) {
 ContentBox *Window::getContentBox() { return content; }
 QScrollArea *Window::getScroll() { return scroll; }
 
-void Window::createControlPanel(Window *window) {
-    controlPanel = new QGroupBox;
-    controlPanel->setFixedHeight(200);
-    QGridLayout *layout = new QGridLayout;
 
-    QLineEdit *filePathInput = new QLineEdit;
 
-    QPushButton *button1 = new QPushButton("read");
-    QPushButton *button2 = new QPushButton("init");
-    QObject::connect(button1, &QPushButton::pressed, [=]() {
-        QJsonValue json = Window::readJsonFile(filePathInput->text());
+void Window::handleInput(QString input) {
+
+    if(input.startsWith("http")) {
+        manager->get(QNetworkRequest(QUrl(input)));
+    }else {
+        QJsonValue json = readJsonFile(input);
         if(json != NULL)
-            window->init(json);
-    });
-    QObject::connect(button2, &QPushButton::pressed, [=]() {
-        window->init();
-    });
-
-    layout->addWidget(filePathInput, 0, 0, 1, 4);
-    layout->addWidget(button1, 1, 0, 1, 2);
-    layout->addWidget(button2, 1, 2, 1, 2);
-
-    controlPanel->setLayout(layout);
+            init(json);
+    }
 }
 
 QJsonValue Window::readJsonFile(QString filePath) {
@@ -105,6 +98,46 @@ QJsonValue Window::readJsonFile(QString filePath) {
     QJsonValue json = QJsonValue::fromVariant(QJsonDocument::fromJson(line.toUtf8()).toVariant());
     return json;
 }
+
+//Privete function for Window
+void Window::createControlPanel(Window *window) {
+    controlPanel = new QGroupBox;
+    controlPanel->setFixedHeight(200);
+    QGridLayout *layout = new QGridLayout;
+
+    QLineEdit *filePathInput = new QLineEdit;
+
+    QPushButton *button1 = new QPushButton("read");
+    QPushButton *button2 = new QPushButton("init");
+
+    QObject::connect(filePathInput, &QLineEdit::returnPressed, [=]() {
+        button1->pressed();
+    });
+
+    QObject::connect(button1, &QPushButton::pressed, [=]() {
+        handleInput(filePathInput->text());
+    });
+    QObject::connect(button2, &QPushButton::pressed, [=]() {
+        window->init();
+    });
+
+    layout->addWidget(filePathInput, 0, 0, 1, 4);
+    layout->addWidget(button1, 1, 0, 1, 2);
+    layout->addWidget(button2, 1, 2, 1, 2);
+
+    controlPanel->setLayout(layout);
+}
+
+//Private slots
+void Window::requestFinished(QNetworkReply *reply) {
+
+
+    QJsonValue json = QJsonValue::fromVariant(QJsonDocument::fromJson(reply->readAll()).toVariant());
+    if(json != NULL)
+        init(json);
+    //qDebug() << json;
+}
+
 
 
 ContentBox::ContentBox(const QJsonValue &json, QWidget *parent) : QWidget(parent){

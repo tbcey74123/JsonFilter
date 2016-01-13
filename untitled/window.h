@@ -11,8 +11,14 @@
 class QGroupBox;
 class ContentBox;
 class QSize;
+class QNetworkReply;
+class QNetworkAccessManager;
 
 class Window : public QWidget {
+
+    Q_OBJECT
+
+    QNetworkAccessManager *manager;
 
     ContentBox *content;
     QScrollArea *scroll;
@@ -29,10 +35,15 @@ class Window : public QWidget {
         ContentBox *getContentBox();
         QScrollArea *getScroll();
 
+        void handleInput(QString input);
         static QJsonValue readJsonFile(QString filePath);
 
     private:
         void createControlPanel(Window *window);
+
+
+    private slots:
+        void requestFinished(QNetworkReply *reply);
 
 };
 
