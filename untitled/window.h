@@ -25,6 +25,11 @@ class Window : public QWidget {
     QGroupBox *controlPanel;
     QVBoxLayout *layout;
 
+    QString comboBoxItem[3] = {"Read From local file", "大島涼花", "岡田彩花"};
+    QString baseUrl = "http://7gogo.jp/api/talk/post/detail/";
+    QString Url[2] = {"iXJJwvijUX_9GtN76wEuUm==/", "4ZgEIz1G9PF9GtN76wEuUm==/"};
+    int itemNumber = 3;
+
     public:
         Window(QWidget *parent = 0);
 

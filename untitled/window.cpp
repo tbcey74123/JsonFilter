@@ -16,6 +16,7 @@
 #include <QGroupBox>
 #include <QFile>
 #include <QLineEdit>
+#include <QComboBox>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
@@ -101,9 +102,14 @@ QJsonValue Window::readJsonFile(QString filePath) {
 
 //Privete function for Window
 void Window::createControlPanel(Window *window) {
+
     controlPanel = new QGroupBox;
     controlPanel->setFixedHeight(200);
     QGridLayout *layout = new QGridLayout;
+
+    QComboBox *comboBox = new QComboBox;
+    for(int i = 0; i < itemNumber; i++)
+        comboBox->addItem(comboBoxItem[i]);
 
     QLineEdit *filePathInput = new QLineEdit;
 
@@ -115,13 +121,17 @@ void Window::createControlPanel(Window *window) {
     });
 
     QObject::connect(button1, &QPushButton::pressed, [=]() {
-        handleInput(filePathInput->text());
+        if(comboBox->currentIndex() == 0)
+            handleInput(filePathInput->text());
+        else
+            handleInput(baseUrl + Url[comboBox->currentIndex() - 1] + filePathInput->text());
     });
     QObject::connect(button2, &QPushButton::pressed, [=]() {
         window->init();
     });
 
-    layout->addWidget(filePathInput, 0, 0, 1, 4);
+    layout->addWidget(comboBox, 0, 0, 1, 1);
+    layout->addWidget(filePathInput, 0, 1, 1, 3);
     layout->addWidget(button1, 1, 0, 1, 2);
     layout->addWidget(button2, 1, 2, 1, 2);
 
